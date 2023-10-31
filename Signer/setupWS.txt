@@ -1,0 +1,6 @@
+sc create "Signer" BinPath="C:\Signer\BIN\Signer\Signer.exe -urls http://localhost:5000" DisplayName="CryptoPro Signer"
+sc description Signer "автоподпись pdf файлов через КриптоПро"
+sc config Signer start=auto
+
+sc stop Signer
+sc delete Signer

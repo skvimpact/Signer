@@ -1,0 +1,6 @@
+curl -H "Content-Type: application/json" -X POST 'http://localhost:5140/Signer/Sign' -d '{ "FileName" : "test.epub" }'
+
+
+
+
+curl -H "Content-Type: application/json" 'http://localhost:5140/Signer/Crc32/test.epub'

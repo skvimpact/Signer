@@ -1,0 +1,1 @@
+dotnet publish -c Release --output c:/Signer/BIN/Signer 
