@@ -2,36 +2,32 @@ using Signer;
 using Signer.Settings;
 using Signer.Services;
 using Serilog;
-using Microsoft.AspNetCore.Builder;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog();
-builder.Host.UseWindowsService();
-  
-var cs = new CryptoSettings();
-builder.Configuration.GetSection(nameof(CryptoSettings)).Bind(cs);
-builder.Services.AddSingleton(cs);
+IHost host = Host.
+CreateDefaultBuilder(args)
+    .UseSerilog()
+    .UseWindowsService()
+    .ConfigureAppConfiguration((hostContext, configBuilder) =>
+    {
+        configBuilder
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    })
+    .ConfigureServices((hostContext, services) =>
+    {
+        services.AddSingleton<UnsignedDocuments>();
+        services.AddSingleton<ISignerService, SignerService>();
+        //services.AddSingleton<ISignerService, FakeSignerService>();        
+        services.AddSingleton<WorkerTask>();
+        services.AddHostedService<Worker>();
 
-var fs = new FileSettings();
-builder.Configuration.GetSection(nameof(FileSettings)).Bind(fs);
-builder.Services.AddSingleton(fs);
-
-var ws = new WorkerSettings();
-builder.Configuration.GetSection(nameof(WorkerSettings)).Bind(ws);
-builder.Services.AddSingleton(ws);
-
-builder.Services.AddSingleton<UnsignedDocuments>();
-builder.Services.AddSingleton<SignerService>();
-builder.Services.AddHostedService<Worker>();
-
-var app = builder.Build();
-
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(hostContext.Configuration)
+            .CreateLogger();
+    })
+    .Build();
 
 try{
-    app.Run();
+    await host.RunAsync();
     return 0;
 }
 catch (Exception ex)

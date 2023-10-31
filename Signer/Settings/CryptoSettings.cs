@@ -7,7 +7,7 @@ namespace Signer.Settings
 {
     public class CryptoSettings
     {
-        public string? SerianNumber { get; set; }
+        public string? SerialNumber { get; set; }
         public string? SubjectName { get; set; }
     }
 }

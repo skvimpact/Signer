@@ -1,3 +1,4 @@
+using Xunit;
 using Microsoft.Extensions.Configuration;
 using Signer.Services;
 using Signer.Settings;
@@ -16,15 +17,23 @@ public class SignerServiceTest
     [Fact]
     public void SignerServiceCanSign()
     {
-        var cs = new CryptoSettings();
-        config.GetSection(nameof(CryptoSettings)).Bind(cs);        
+        var document = "test.txt";
+        File.WriteAllText(document, $"CryptoPro {DateTime.UtcNow}"); 
+         
         var fs = new FileSettings();
         config.GetSection(nameof(FileSettings)).Bind(fs);
-        var ss = new SignerService(cs, fs);
-        var documents = new UnsignedDocuments(fs);
-        foreach(var document in documents)
-        {
-            ss.SignDocument(document);
-        }
+
+        string docFile = Path.Combine(
+                fs.DocumentFolder ?? throw new ArgumentNullException(nameof(fs.DocumentFolder)),
+                document);
+        docFile = document;
+
+        string sigFile = Path.Combine(
+                fs.SignFolder ?? throw new ArgumentNullException(nameof(fs.SignFolder)),
+                $"{document}.{fs.SignExtension}" ?? throw new ArgumentNullException(nameof(fs.SignExtension)));
+        
+        var ss = new SignerService(config);
+        ss.FindSignature();
+        ss.SignDocument(docFile, sigFile);        
     }
 }
