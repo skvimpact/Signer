@@ -28,13 +28,21 @@ public class WorkerTask
                     logger.LogError(error.ToString());
                 }
             }
-            else
+            if (signer.SignIsFound())
             {           
                 //if (documents.Count == 0)
                 //    logger.LogInformation("There are no new documents for signing");
                 documents.ForEach(document => {
-                    signer.SignDocument(document.Path, document.SignPath);
-                    logger.LogInformation("\"{document}\" has been signed", document.Path);
+                    var signResult = signer.SignDocument(document.Path, document.SignPath);
+                    if (signResult.HasErrors)
+                    {
+                        foreach(var error in signResult.Errors)
+                        {
+                            logger.LogError(error.ToString());
+                        }
+                    }
+                    else
+                        logger.LogInformation("\"{document}\" has been signed", document.Path);
                 });        
             }
         }        

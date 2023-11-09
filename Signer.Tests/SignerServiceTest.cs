@@ -32,7 +32,9 @@ public class SignerServiceTest
                 fs.SignFolder ?? throw new ArgumentNullException(nameof(fs.SignFolder)),
                 $"{document}.{fs.SignExtension}" ?? throw new ArgumentNullException(nameof(fs.SignExtension)));
         
-        var ss = new SignerService(config);
+        var sf = new StoreFinder(config);
+        var tf = new TokenFinder(config);
+        var ss = new SignerService(new ISignFinder[] {tf, sf});
         ss.FindSignature();
         ss.SignDocument(docFile, sigFile);        
     }

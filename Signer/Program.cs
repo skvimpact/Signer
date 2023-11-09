@@ -15,8 +15,12 @@ CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
         services.AddSingleton<UnsignedDocuments>();
-        services.AddSingleton<ISignerService, SignerService>();
-        //services.AddSingleton<ISignerService, FakeSignerService>();        
+        services.AddSingleton<StoreFinder>();
+        services.AddSingleton<TokenFinder>();        
+        services.AddSingleton<ISignerService>(x =>
+            new SignerService(new ISignFinder[] {
+                x.GetRequiredService<StoreFinder>(),
+                x.GetRequiredService<TokenFinder>() }));   
         services.AddSingleton<WorkerTask>();
         services.AddHostedService<Worker>();
 

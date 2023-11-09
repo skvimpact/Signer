@@ -4,7 +4,8 @@ namespace Signer.Services
 {
     public interface ISignerService
     {
-        public void SignDocument(string? docFile, string? sigFile);
+        public IStatusGeneric SignDocument(string? docFile, string? sigFile);
+        public bool SignIsFound();
         public IStatusGeneric FindSignature();
     }
 }    

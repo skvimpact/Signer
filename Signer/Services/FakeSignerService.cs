@@ -9,14 +9,28 @@ namespace Signer.Services
             return new StatusGenericHandler();
         }
 
-        public void SignDocument(string? docFile, string? sigFile)
-        {            
-            if (docFile == null)
-                throw new ArgumentNullException(nameof(docFile));
-            if (sigFile == null)
-                throw new ArgumentNullException(nameof(sigFile));            
-                
-            File.Copy(docFile, sigFile);
+        public IStatusGeneric SignDocument(string? docFile, string? sigFile)
+        {     
+            var status = new StatusGenericHandler();
+            try
+            {                   
+                if (docFile == null)
+                    throw new ArgumentNullException(nameof(docFile));
+                if (sigFile == null)
+                    throw new ArgumentNullException(nameof(sigFile));            
+                    
+                File.Copy(docFile, sigFile);
+            }
+            catch(Exception ex)
+            {
+                status.AddError(ex.Message);
+            }  
+            return status;             
+        }
+
+        public bool SignIsFound()
+        {
+            return true;
         }
     }
 }    

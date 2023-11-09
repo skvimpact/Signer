@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Signer.Settings
 {
-    public class CryptoSettings
+    public class StoreSettings
     {
         public string? SerialNumber { get; set; }
         public string? SubjectName { get; set; }
