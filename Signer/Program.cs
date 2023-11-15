@@ -16,11 +16,13 @@ CreateDefaultBuilder(args)
     {
         services.AddSingleton<UnsignedDocuments>();
         services.AddSingleton<StoreFinder>();
-        services.AddSingleton<TokenFinder>();        
+        services.AddSingleton<TokenFinder>();
+        services.AddSingleton<TokenUsbFinder>();        
         services.AddSingleton<ISignerService>(x =>
             new SignerService(new ISignFinder[] {
                 x.GetRequiredService<StoreFinder>(),
-                x.GetRequiredService<TokenFinder>() }));   
+                x.GetRequiredService<TokenFinder>(),
+                x.GetRequiredService<TokenUsbFinder>() }));   
         services.AddSingleton<WorkerTask>();
         services.AddHostedService<Worker>();
 
