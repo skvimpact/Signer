@@ -12,7 +12,7 @@ namespace Signer.Services
         }
         public void Reset()
         {      
-            configuration.GetSection(nameof(FileSettings)).Bind(settings);      
+            configuration.GetSection(nameof(FileSettings)).Bind(settings);
             Clear();
             AddDocuments(
                 settings.DocumentFolder,
@@ -37,10 +37,29 @@ namespace Signer.Services
                 .Except(Directory
                     .GetFiles(signFolder, $"*.{signExtension}")
                         .Select(f => Path.GetFileNameWithoutExtension(f)).ToHashSet()).
-                Select(d => new UnsignedDocument {
-                    Path = Path.Combine(documentFolder, d),
-                    SignPath = Path.Combine(signFolder, $"{d}.{signExtension}")
-                }));            
+                Select(_ => Document(_, documentFolder, signFolder, signExtension)));            
         }
+        public UnsignedDocument Document(string name) 
+        {
+            configuration.GetSection(nameof(FileSettings)).Bind(settings);
+            return Document(
+                name,
+                settings.DocumentFolder,
+                settings.SignFolder,
+                settings.SignExtension);            
+        }  
+        private UnsignedDocument Document(string name, string? documentFolder, string? signFolder, string? signExtension) 
+        {
+            if (documentFolder == null)
+                throw new ArgumentNullException(nameof(documentFolder));
+            if (signFolder == null)
+                throw new ArgumentNullException(nameof(signFolder));
+            if (signExtension == null)
+                throw new ArgumentNullException(nameof(signExtension));            
+            return new UnsignedDocument{
+                    Path = Path.Combine(documentFolder, name),
+                    SignPath = Path.Combine(signFolder, $"{name}.{signExtension}")
+            };
+        }             
     }
 }

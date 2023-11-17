@@ -1,7 +1,7 @@
 using Signer;
-using Signer.Settings;
 using Signer.Services;
 using Serilog;
+using Microsoft.AspNetCore.Hosting;
 
 IHost host = Host.
 CreateDefaultBuilder(args)
@@ -12,8 +12,13 @@ CreateDefaultBuilder(args)
         configBuilder
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
     })
+    .ConfigureWebHostDefaults((configure) => 
+    {
+        configure.UseStartup<Startup>();
+    })
     .ConfigureServices((hostContext, services) =>
     {
+        services.AddControllers();
         services.AddSingleton<UnsignedDocuments>();
         services.AddSingleton<StoreFinder>();
         services.AddSingleton<TokenFinder>();

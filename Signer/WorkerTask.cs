@@ -30,8 +30,8 @@ public class WorkerTask
             }
             if (signer.SignIsFound())
             {           
-                //if (documents.Count == 0)
-                //    logger.LogInformation("There are no new documents for signing");
+                //if (documents.Count == 0) // zz
+                //    logger.LogInformation("There are no new documents for signing"); // zz
                 documents.ForEach(document => {
                     var signResult = signer.SignDocument(document.Path, document.SignPath);
                     if (signResult.HasErrors)

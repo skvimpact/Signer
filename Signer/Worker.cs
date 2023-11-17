@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Options;
-using Signer.Services;
 using Signer.Settings;
 
 namespace Signer;
